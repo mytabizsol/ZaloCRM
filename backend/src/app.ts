@@ -22,6 +22,7 @@ import { chatRoutes } from './modules/chat/chat-routes.js';
 import { quickReplyRoutes } from './modules/chat/quick-reply-routes.js';
 import { contactRoutes } from './modules/contacts/contact-routes.js';
 import { leadInsightsRoutes } from './modules/contacts/lead-insights-routes.js';
+import { duplicateReviewRoutes } from './modules/contacts/duplicate-review-routes.js';
 import { contactSubResourceRoutes } from './modules/contacts/contact-sub-resource-routes.js';
 import { appointmentRoutes } from './modules/contacts/appointment-routes.js';
 import { startAppointmentReminder } from './modules/contacts/appointment-reminder.js';
@@ -116,6 +117,7 @@ async function bootstrap() {
   await app.register(quickReplyRoutes);
   await app.register(contactRoutes);
   await app.register(leadInsightsRoutes);
+  await app.register(duplicateReviewRoutes);
   await app.register(contactSubResourceRoutes);
   await app.register(appointmentRoutes);
   await app.register(dashboardRoutes);

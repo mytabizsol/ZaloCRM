@@ -39,6 +39,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/duplicate-review',
+    name: 'DuplicateReview',
+    component: () => import('@/views/DuplicateReviewView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/automation',
     name: 'Automation',
     component: () => import('@/views/AutomationView.vue'),
