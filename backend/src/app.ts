@@ -19,6 +19,7 @@ import { logger } from './shared/utils/logger.js';
 import { authRoutes } from './modules/auth/auth-routes.js';
 import { zaloRoutes } from './modules/zalo/zalo-routes.js';
 import { chatRoutes } from './modules/chat/chat-routes.js';
+import { quickReplyRoutes } from './modules/chat/quick-reply-routes.js';
 import { contactRoutes } from './modules/contacts/contact-routes.js';
 import { leadInsightsRoutes } from './modules/contacts/lead-insights-routes.js';
 import { contactSubResourceRoutes } from './modules/contacts/contact-sub-resource-routes.js';
@@ -112,6 +113,7 @@ async function bootstrap() {
   await app.register(authRoutes);
   await app.register(zaloRoutes);
   await app.register(chatRoutes);
+  await app.register(quickReplyRoutes);
   await app.register(contactRoutes);
   await app.register(leadInsightsRoutes);
   await app.register(contactSubResourceRoutes);

@@ -95,7 +95,8 @@
 
       <!-- Quick replies: insert draft only, never send automatically -->
       <div class="px-3 pt-2 d-flex ga-2 flex-wrap">
-        <v-chip v-for="template in quickReplies" :key="template.label" size="small" variant="outlined" color="primary" @click="insertQuickReply(template.text)">{{ template.label }}</v-chip>
+        <v-chip v-for="template in quickReplies" :key="template.id" size="small" variant="outlined" color="primary" @click="insertQuickReply(template.text)">{{ template.title }}</v-chip>
+        <v-btn v-if="authStore.isAdmin" size="x-small" variant="text" prepend-icon="mdi-pencil-outline" @click="showSnippetEditor=true">Quản lý mẫu</v-btn>
       </div>
       <!-- Input -->
       <div class="pa-2 d-flex align-end chat-input-area">
@@ -104,6 +105,23 @@
       </div>
     </template>
 
+    <!-- Organization-level quick reply templates -->
+    <v-dialog v-model="showSnippetEditor" max-width="650" scrollable>
+      <v-card rounded="lg">
+        <v-card-title>Thư viện mẫu tin nhắn</v-card-title>
+        <v-card-text>
+          <p class="text-caption mb-3">Dùng <code v-pre>{{name}}</code> để chèn tên khách và <code v-pre>{{agent}}</code> để chèn tên nhân viên. Mẫu chỉ được đưa vào ô soạn thảo, không gửi tự động.</p>
+          <v-alert v-if="snippetError" type="error" variant="tonal" class="mb-3">{{ snippetError }}</v-alert>
+          <v-row v-for="(snippet,i) in quickReplies" :key="snippet.id" dense align="center">
+            <v-col cols="11"><v-text-field v-model="snippet.title" label="Tên mẫu" variant="outlined" density="compact" :counter="70" class="mb-1" />
+              <v-textarea v-model="snippet.text" label="Nội dung" variant="outlined" density="compact" rows="2" auto-grow :counter="1500" /></v-col>
+            <v-col cols="1"><v-btn icon="mdi-delete-outline" color="error" variant="text" @click="quickReplies.splice(i,1)" /></v-col>
+          </v-row>
+          <v-btn prepend-icon="mdi-plus" variant="tonal" :disabled="quickReplies.length>=30" @click="addQuickReply">Thêm mẫu</v-btn>
+        </v-card-text>
+        <v-card-actions><v-spacer/><v-btn @click="cancelSnippetEdit">Hủy</v-btn><v-btn color="primary" :loading="savingSnippets" @click="saveQuickReplies">Lưu</v-btn></v-card-actions>
+      </v-card>
+    </v-dialog>
     <!-- Image preview dialog -->
     <v-dialog v-model="showImagePreview" max-width="900" content-class="elevation-0">
       <div class="text-center" @click="showImagePreview = false" style="cursor: pointer;">
@@ -118,7 +136,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, computed } from 'vue';
+import { ref, watch, nextTick, computed, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 import type { Conversation, Message } from '@/composables/use-chat';
 import { api } from '@/api/index';
 
@@ -133,13 +152,29 @@ const props = defineProps<{
 const emit = defineEmits<{ send: [content: string]; 'toggle-contact-panel': [] }>();
 
 const inputText = ref('');
-const quickReplies = [
-  { label: 'Chào khách', text: 'Xin chào anh/chị! Em có thể hỗ trợ mình thông tin gì ạ?' },
-  { label: 'Xin thông tin', text: 'Anh/chị vui lòng để lại nhu cầu và số điện thoại liên hệ để bên em tư vấn chi tiết nhé.' },
-  { label: 'Xác nhận', text: 'Em đã nhận được thông tin. Em sẽ kiểm tra và phản hồi anh/chị sớm nhất có thể.' },
-  { label: 'Cảm ơn', text: 'Cảm ơn anh/chị đã liên hệ và quan tâm đến dịch vụ của bên em!' },
-];
-function insertQuickReply(text: string) { inputText.value = inputText.value.trim() ? inputText.value + '\n' + text : text; }
+type Snippet = {id:string;title:string;text:string};
+const authStore=useAuthStore();
+const quickReplies=ref<Snippet[]>([]);
+const showSnippetEditor=ref(false),savingSnippets=ref(false),snippetError=ref('');
+async function loadQuickReplies(){
+  try{const {data}=await api.get('/chat/quick-replies');quickReplies.value=data.templates;}
+  catch{snippetError.value='Không thể tải thư viện mẫu tin nhắn';}
+}
+function addQuickReply(){quickReplies.value.push({id:crypto.randomUUID(),title:'Mẫu mới',text:'Nhập nội dung mẫu'});}
+function cancelSnippetEdit(){showSnippetEditor.value=false;snippetError.value='';loadQuickReplies();}
+async function saveQuickReplies(){
+  savingSnippets.value=true;snippetError.value='';
+  try{await api.put('/chat/quick-replies',{templates:quickReplies.value});showSnippetEditor.value=false;await loadQuickReplies();}
+  catch{snippetError.value='Không thể lưu mẫu: kiểm tra nội dung và quyền quản trị';}
+  finally{savingSnippets.value=false;}
+}
+function insertQuickReply(text:string){
+  const contactName=props.conversation?.contact?.fullName?.trim()||'anh/chị';
+  const agentName=authStore.user?.fullName?.trim()||'nhân viên tư vấn';
+  const output=text.replace(/\{\{name\}\}/g,contactName).replace(/\{\{agent\}\}/g,agentName);
+  inputText.value=inputText.value.trim()?inputText.value+'\n'+output:output;
+}
+onMounted(loadQuickReplies);
 const messagesContainer = ref<HTMLElement | null>(null);
 const previewImageUrl = ref('');
 const showImagePreview = computed({ get: () => !!previewImageUrl.value, set: (v) => { if (!v) previewImageUrl.value = ''; } });

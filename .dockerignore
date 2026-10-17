@@ -1,0 +1,15 @@
+.git
+.gitignore
+**/node_modules
+**/dist
+**/.vite
+**/.cache
+**/coverage
+**/.env
+.env
+.env.*
+!.env.example
+backups
+*.log
+*.dump
+*.sql
