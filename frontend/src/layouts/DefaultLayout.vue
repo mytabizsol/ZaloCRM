@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useTheme } from 'vuetify';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
@@ -101,7 +101,7 @@ onMounted(() => {
   theme.global.name.value = isDark.value ? 'dark' : 'light';
 });
 
-const menuItems = [
+const menuItems = computed(() => [
   { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', path: '/' },
   { title: 'Tin nhắn', icon: 'mdi-message-text-outline', path: '/chat' },
   { title: 'Khách hàng', icon: 'mdi-account-group-outline', path: '/contacts' },
@@ -114,7 +114,8 @@ const menuItems = [
   { title: 'Báo cáo', icon: 'mdi-chart-arc', path: '/reports' },
   { title: 'Nhân viên', icon: 'mdi-account-cog-outline', path: '/settings' },
   { title: 'API & Webhook', icon: 'mdi-api', path: '/api-settings' },
-];
+  { title: 'Nhật ký', icon: 'mdi-history', path: '/audit', adminOnly: true },
+].filter(item => !('adminOnly' in item) || authStore.isAdmin));
 
 function toggleTheme() {
   isDark.value = !isDark.value;
