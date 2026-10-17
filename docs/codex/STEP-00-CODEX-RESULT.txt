@@ -1,0 +1,16 @@
+STEP-00 implemented but recorded as **PARTIAL** in [PROGRESS.md](D:\Apps\ZaloCRM\docs\codex\PROGRESS.md:13).
+
+- MYTA official logo/favicon now used in browser, login, header and sidebar.
+- Flat navigation is now seven expandable Vietnamese workflow groups.
+- `/settings` is a usable hub; existing settings and channel/API/widget/automation/audit routes are preserved via direct routes or redirects.
+- Unbuilt settings/projects are clearly labeled “Sắp ra mắt”; no fake functionality added.
+- Removed retired product labels and false “ONLINE” indicator.
+
+Validation blockers:
+
+- Local build: incomplete executable setup plus pre-existing Vuetify/`SetupView.vue` type errors.
+- Docker build: Buildx lock permission denied.
+- Browser unavailable, so responsive smoke/focus checks were not run.
+- Git commit blocked: cannot create `.git/index.lock` due permission denied.
+
+All source changes remain uncommitted on `feature/upstream-v34-integration`; `docs/codex/STEP-00-PROMPT.txt` was left untouched. Stopped without starting STEP-01.

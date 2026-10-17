@@ -5,7 +5,7 @@
       Cài đặt
     </h1>
 
-    <v-tabs v-model="tab" class="mb-4">
+    <v-tabs v-model="tab" class="mb-4" @update:model-value="navigateTab">
       <v-tab value="users">Nhân viên</v-tab>
       <v-tab value="teams">Đội nhóm</v-tab>
       <v-tab value="org">Tổ chức</v-tab>
@@ -129,7 +129,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useUsers, type OrgUser } from '@/composables/use-users';
 import { useAuthStore } from '@/stores/auth';
 import TeamManagement from '@/components/settings/TeamManagement.vue';
@@ -137,8 +138,10 @@ import OrgSettings from '@/components/settings/OrgSettings.vue';
 
 const { users, loading, error, fetchUsers, createUser, updateUser, resetPassword, deleteUser } = useUsers();
 const authStore = useAuthStore();
+const router = useRouter();
+const props = withDefaults(defineProps<{ initialTab?: 'users' | 'teams' | 'org' }>(), { initialTab: 'users' });
 
-const tab = ref('users');
+const tab = ref(props.initialTab);
 const showCreate = ref(false);
 const showEdit = ref(false);
 const showPassword = ref(false);
@@ -173,6 +176,16 @@ function roleLabel(role: string) {
   if (role === 'owner') return 'Chủ sở hữu';
   if (role === 'admin') return 'Quản trị viên';
   return 'Nhân viên';
+}
+
+function navigateTab(value: string | null) {
+  if (!value) return;
+  const paths: Record<string, string> = {
+    users: '/settings/users',
+    teams: '/settings/team',
+    org: '/settings/organization',
+  };
+  if (paths[value]) router.push(paths[value]);
 }
 
 function openCreate() {
@@ -235,4 +248,6 @@ async function handleDelete() {
 }
 
 onMounted(fetchUsers);
+
+watch(() => props.initialTab, (value) => { tab.value = value; });
 </script>

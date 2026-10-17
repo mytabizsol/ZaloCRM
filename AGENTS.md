@@ -103,3 +103,9 @@ The executable roadmap is `docs/codex/TASKS.md`. Start with **STEP-00** (IA & Se
 - Brand-specific WordPress skill techniques are a visual reference only: do not overwrite CRM Vue routing, replace WordPress code, or require WordPress ImageGen workflows for ordinary settings/navigation work.
 - **No autonomous endless task loops:** finish and verify ONE step; log progress and stop. Each subsequent step must be deliberately launched or approved. Cost-aware Codex usage is more important than artificially maximizing parallelism.
 - **Step 00 focus:** rebrand with exact MYTA logo and build a logical CRM sidebar/Settings hub. Do not add fake settings pages that imply unimplemented features work. **Steps 01/02:** first-class CRM Project module. See `docs/codex/TASKS.md`.
+
+## 9. Token-efficiency / operation guardrails
+- For each Codex call: use the Terra High model on **one tightly scoped** task; select at most two relevant skill files. Do not load all reference docs or full application files when `rg`, targeted line ranges, or small diffs will answer the question.
+- Limit routine command output to approximately 100 lines; avoid dumping bundled JS, huge logs, browser help, vendor README, or unrelated plugin/desktop skills. Inspect failed commands via concise summaries and then exact error spans.
+- For frontend tasks, first use existing Vue/Vuetify design system; browser validation should be task-scoped and reuse a known working Chrome environment. If a required tool is blocked by Windows sandbox, record blocker **once** and stop probing repeatedly. Ask the operator to run the privileged build outside sandbox.
+- Codex STEP-00 used approximately 105.7k model tokens despite Terra High. **High does not mean cheaper**; keep prompts narrow and prefer focused backend/frontend steps. Do not run indefinite research loops or verbose retries.

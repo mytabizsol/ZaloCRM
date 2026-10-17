@@ -55,7 +55,7 @@
     </v-row>
     <v-dialog v-model="confirmRemove" max-width="390">
       <v-card><v-card-title>Xóa bản nháp?</v-card-title>
-        <v-card-text>Chỉ xóa bản nháp lưu trong ZaloCRM. Không ảnh hưởng bài viết đã đăng thủ công trên Zalo.</v-card-text>
+        <v-card-text>Chỉ xóa bản nháp lưu trong MYTA CRM. Không ảnh hưởng bài viết đã đăng thủ công trên Zalo.</v-card-text>
         <v-card-actions><v-spacer/><v-btn @click="confirmRemove=false">Hủy</v-btn>
           <v-btn color="error" @click="removeDraft">Xóa</v-btn></v-card-actions>
       </v-card>

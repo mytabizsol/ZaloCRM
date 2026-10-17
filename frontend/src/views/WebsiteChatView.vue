@@ -8,7 +8,7 @@
     </div>
     <v-alert v-if="error" variant="tonal" type="error" class="mb-3">{{ error }}</v-alert>
     <v-alert v-if="message" variant="tonal" type="success" class="mb-3">{{ message }}</v-alert>
-    <v-alert variant="tonal" type="info" class="mb-4">Website phải nhúng mã script và ZaloCRM cần tên miền HTTPS công khai. Trình duyệt khách sẽ gửi thông tin vào CRM qua iframe, không cần cấp quyền truy cập backend WordPress.</v-alert>
+    <v-alert variant="tonal" type="info" class="mb-4">Website phải nhúng mã script và MYTA CRM cần tên miền HTTPS công khai. Trình duyệt khách sẽ gửi thông tin vào CRM qua iframe, không cần cấp quyền truy cập backend WordPress.</v-alert>
     <v-alert v-if="!publicReady" type="warning" variant="tonal" class="mb-4">Địa chỉ CRM hiện tại chưa phải HTTPS công khai. Mã nhúng tạo từ địa chỉ này chỉ dùng để thử nghiệm nội bộ; khách truy cập website từ Internet chưa thể sử dụng cho đến khi CRM được cấu hình tên miền HTTPS.</v-alert>
     <v-row>
       <v-col cols="12" md="6"><v-card rounded="lg">
