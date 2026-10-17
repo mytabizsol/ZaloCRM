@@ -26,7 +26,7 @@ Stack: Vue 3 + TypeScript + Vuetify 4 + Vue Router + Pinia + Vite; Node/Fastify 
 - Existing public website form/widget requires separately approved HTTPS-domain exposure. Do not expose localhost to internet by assumption.
 
 ## 2. Strict step-by-step Codex workflow
-**One task at a time. No global "build everything" prompt, parallel coding agents or autonomous unbounded loop.**
+**One Codex worker per task; the owner has now authorized an unattended, bounded external supervisor to invoke the next worker automatically. No parallel Codex sessions or unbounded credit consumption.**
 1. Read `docs/codex/TASKS.md` and `docs/codex/PROGRESS.md`. Pick the first `TODO` without unmet dependencies.
 2. Before coding: `git status -sb`, inspect related modules, identify exact files and acceptance tests. State plan and risks in progress.
 3. Work on ONLY that step; keep PR-sized changes and avoid unrelated refactors.
@@ -34,8 +34,8 @@ Stack: Vue 3 + TypeScript + Vuetify 4 + Vue Router + Pinia + Vite; Node/Fastify 
 5. Run required checks. On failure, diagnose and fix before completion. Never report "Done" merely because code compiled.
 6. Add evidence to `docs/codex/PROGRESS.md`: step ID, files, tests, outstanding risks, working state, commit SHA.
 7. Commit only tested changes with `feat(projects): ...`, `feat(settings): ...`, `fix(...): ...` (do not commit credentials).
-8. **STOP after that step.** Do not start the next task without a new deliberate Codex invocation. Never silently skip a failed acceptance criterion; mark BLOCKED or PARTIAL.
-9. Do not push/deploy unless the invocation explicitly requests it. Never merge to main automatically. Owner can approve next step.
+8. **STOP after that worker's step.** The explicitly authorized MYTA CRM Autopilot supervisor may automatically start the next independent Codex invocation only after build and safety gates pass. Never silently skip a failed acceptance criterion; block, record or defer true provider-dependent QA.
+9. Worker must not push or deploy. The user explicitly authorized the separate local supervisor to commit and push to the feature branch after a successful build, never merge to main or deploy production migrations. The supervisor, not the owner, determines the next safe step.
 10. If an API requires credentials, permissions or app-review, build safe scaffolding, clearly label `CHỜ CẤP QUYỀN API`, test mocks/contracts, and STOP before claiming real-world success.
 11. If Codex CLI is missing auth, has rate limits or hangs, record blocker; do not bypass authentication or spend credits indefinitely.
 
@@ -101,7 +101,7 @@ The executable roadmap is `docs/codex/TASKS.md`. Start with **STEP-00** (IA & Se
   - `.agents/skills/myta-oss-research/SKILL.md`
   - `.agents/skills/myta-crm-qa/SKILL.md`.
 - Brand-specific WordPress skill techniques are a visual reference only: do not overwrite CRM Vue routing, replace WordPress code, or require WordPress ImageGen workflows for ordinary settings/navigation work.
-- **No autonomous endless task loops:** finish and verify ONE step; log progress and stop. Each subsequent step must be deliberately launched or approved. Cost-aware Codex usage is more important than artificially maximizing parallelism.
+- **Unattended mode approved:** each worker completes ONE step and exits; a separate bounded Windows supervisor starts the next task automatically, subject to daily invocation cap, per-task timeout, Git/build checks, no production migrations and a STOP flag. Never launch nested autonomous agents.
 - **Step 00 focus:** rebrand with exact MYTA logo and build a logical CRM sidebar/Settings hub. Do not add fake settings pages that imply unimplemented features work. **Steps 01/02:** first-class CRM Project module. See `docs/codex/TASKS.md`.
 
 ## 9. Token-efficiency / operation guardrails
@@ -109,3 +109,12 @@ The executable roadmap is `docs/codex/TASKS.md`. Start with **STEP-00** (IA & Se
 - Limit routine command output to approximately 100 lines; avoid dumping bundled JS, huge logs, browser help, vendor README, or unrelated plugin/desktop skills. Inspect failed commands via concise summaries and then exact error spans.
 - For frontend tasks, first use existing Vue/Vuetify design system; browser validation should be task-scoped and reuse a known working Chrome environment. If a required tool is blocked by Windows sandbox, record blocker **once** and stop probing repeatedly. Ask the operator to run the privileged build outside sandbox.
 - Codex STEP-00 used approximately 105.7k model tokens despite Terra High. **High does not mean cheaper**; keep prompts narrow and prefer focused backend/frontend steps. Do not run indefinite research loops or verbose retries.
+
+## Autopilot mode — Owner authorization 17/10/2026
+- Owner explicitly delegated unattended **sequential Codex development**; no per-step human checkpoint.
+- A new Codex process is automatically launched by `tools/codex-autopilot/runner.mjs` after the prior step exits and the external supervisor confirms safe checks. **Do not launch a second worker from within Codex.**
+- Defaults: Terra High, **at most 3 Codex invocations per Vietnam calendar day**, maximum 35 minutes each, no more than one focused repair per step, 20-minute build cap. The supervisor continues on the next day automatically while Marketing01 is powered on.
+- Operator controls and logs outside repo: `D:\Apps\ZaloCRM-autopilot\state.json`, `autopilot.log`, `STOP`; scripts are in `tools/codex-autopilot`. No push to main, no automatic live database migration, external OAuth, social publishing or paid purchases.
+- The worker MUST edit code and prepare tests, but never invoke `git add`, `git commit`, `git push`, `docker compose build` or production migrations inside its Windows sandbox. The supervisor runs Docker build and Git from an authorized outer session.
+- The first UI branding step STEP-00 had a successful operator-side production Docker build, HTTP 200 and logos tested. Treat its **code phase complete**, but full authenticated mobile UX is **deferred for regression in STEP-17**, not falsely reported as tested.
+- If external credentials, Git, syntax/build, backup or permission errors cannot be resolved safely within one bounded repair invocation, the supervisor records a BLOCKED state and stops rather than deleting data or escalating permissions.

@@ -1,9 +1,9 @@
 # MYTA CRM – Sequential Codex Backlog
-> Project model: GPT-5.6-Terra, reasoning High. ONE step per explicit Codex invocation. Source of truth: `AGENTS.md`.
+> Project model: GPT-5.6-Terra, reasoning High. ONE step per Codex worker; a user-authorized bounded supervisor may automatically invoke the next worker. Source of truth: `AGENTS.md`.
 
 | ID | State | Deliverable | Acceptance gates | Dependencies |
 |---|---|---|---|---|
-| STEP-00 | PARTIAL | **MYTA CRM branding + scientific IA + Settings hub** | Use exact MYTA original logo, update title/favicon/header/login/product names, group navigation by business domain, migrate old links with redirects, Settings hub with clearly labeled subpages. Desktop/mobile UX; no DB changes. | None |
+| STEP-00 | DONE | **MYTA CRM branding + scientific IA + Settings hub** | Use exact MYTA original logo, update title/favicon/header/login/product names, group navigation by business domain, migrate old links with redirects, Settings hub with clearly labeled subpages. Desktop/mobile UX; no DB changes. | None |
 | STEP-01 | TODO | **CRM Projects domain** | Prisma migration with verified backup, Project/Task/Milestone/Membership with tenant-safe CRUD, proper RBAC and tests. | STEP-00 |
 | STEP-02 | TODO | **CRM Projects frontend** | Project list/table + Kanban + creation/detail/tasks/milestones/members, linked contact, filters, deadlines, responsive and accessibility tests. | STEP-01 |
 | STEP-03 | TODO | **Project reporting & Settings** | Project KPIs, overdue notices, owner assignments, configurable defaults, project activity history, permission tests. | STEP-02 |
@@ -25,10 +25,10 @@
 ## Process
 1. Read `AGENTS.md`, `docs/codex/UX-IA.md`, `docs/codex/PROJECTS.md`, `docs/codex/GITHUB-OSS-RESEARCH.md`, then the relevant skill `SKILL.md`.
 2. Review `docs/codex/PROGRESS.md` and actual source. Select the first TODO with satisfied dependencies; if blocked, record and stop.
-3. For each task: research (if useful), architectural decision, implementation, validation, documentation, commit, **STOP**. Never autonomously launch infinite recursive Codex sessions.
+3. Each Codex worker performs one task: research (if useful), architecture, implementation, local validation, report, STOP. External MYTA CRM Autopilot builds, records status, commits and invokes the next separate worker when checks pass. No nested workers.
 4. External system token/API approval is a BLOCKER for actual service integration; mock tests never count as live integration.
 5. Runtime/CI keep older features working. Never deploy/migrate/write production without backup, explicit step permissions and verification.
-6. Task owner updates DONE/PARTIAL/BLOCKED in PROGRESS, with evidence and commit. Next task only on new invocation.
+6. External supervisor updates DONE/PARTIAL/BLOCKED in TASKS/PROGRESS and commits/pushes the feature branch after successful build. It starts next task without owner review, within time and daily invocation limits. Live provider permissions and destructive actions require separate authority.
 
 ## Explicit exclusions
 Two vendor services are excluded from software scope; they must not appear as backlog items, license templates, pricing options or navigation. Detailed agreed functional scope totals **52** features plus 10 MYTA extensions and CRM Projects.

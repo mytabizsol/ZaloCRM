@@ -32,3 +32,9 @@ For each Codex run append:
 ### Login viewport QA note
 - Headless Chrome rendered 1280x800 and 390x844 login screenshots. Original 390 capture showed content cut at viewport edge; possible Chrome headless min-width constraint, not yet verified with actual device emulation. Kept screenshots as pre-fix evidence.
 - Hardened AuthLayout container width/min-width and LoginView padding for narrow screens, rebuilt successfully via Docker (exit 0). Authenticated mobile Settings/sidebar smoke still NOT TESTED; STEP-00 remains PARTIAL.
+
+### STEP-00 — Code/build accepted for autonomous continuation (2026-10-17)
+- Operator-side Docker build completed successfully, running MYTA CRM returned health 200 and DB connected, official logo and favicon HTTP 200, desktop and initial mobile screenshots captured.
+- Completed branding and settings code is permitted as dependency for STEP-01 under owner's unattended development authorization.
+- Full authenticated responsive/navigation E2E and possible Chrome mobile viewport anomaly are **not tested**; retain in STEP-17 regression backlog. STEP-00 therefore has code status DONE, NOT production-validated UX.
+- New policy: unattended supervisor builds, commits and pushes approved feature branch after gates; never touches live production DB automatically.
