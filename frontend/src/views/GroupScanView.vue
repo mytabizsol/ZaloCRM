@@ -8,6 +8,7 @@
     <v-alert variant="tonal" type="warning" class="mb-4">
       Zalo cá nhân sử dụng SDK không chính thức. Chỉ quét các nhóm mà tài khoản đang tham gia; không tự động nhắn tin, kết bạn hay thu thập số điện thoại thành viên. Mỗi tài khoản chỉ được quét lại sau 5 phút.
     </v-alert>
+    <v-alert v-if="!accounts.length&&!loading" type="info" variant="tonal" class="mb-4">Chưa có tài khoản Zalo. <v-btn size="small" variant="tonal" to="/zalo-accounts" class="ml-2">Kết nối Zalo bằng QR</v-btn></v-alert>
     <v-alert v-if="error" type="error" variant="tonal" class="mb-4">{{ error }}</v-alert>
     <v-alert v-if="message" type="success" variant="tonal" class="mb-4">{{ message }}</v-alert>
     <v-card rounded="lg" class="mb-4"><v-card-text class="d-flex ga-3 align-center flex-wrap">

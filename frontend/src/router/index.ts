@@ -75,6 +75,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/zalo-oa-publish',
+    name: 'ZaloOaPublish',
+    component: () => import('@/views/ZaloOaPublishView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/appointments',
     name: 'Appointments',
     component: () => import('@/views/AppointmentsView.vue'),
