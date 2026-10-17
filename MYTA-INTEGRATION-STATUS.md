@@ -72,3 +72,38 @@
 - /health: 200 DB connected; các route SPA /group-scan, /journal, /zalo-oa-publish: HTTP 200.
 - Group scan và OA publish API không có JWT: 401.
 - Không thay đổi database schema, không gửi bài/tin tự động khi không có xác nhận.
+
+## 17/10/2026 — Thay nhật ký bằng lịch xuất bản đa kênh và Website Chat
+
+### Giao diện
+- `/social-publishing` (thay mục Nhật ký); đường dẫn cũ `/journal` và `/zalo-oa-publish` chuyển tiếp đến trang mới.
+- `/website-chat`: cấu hình widget theo domain, mã nhúng, inbox chat hai chiều, lưu lead Website Chat trong CRM.
+
+### Bộ đăng bài
+- 4 kênh `wordpress`, `facebook`, `zalo-oa`, `tiktok`; một bản ghi/kênh, có thể tạo nhiều bài cho nhiều kênh.
+- API quản trị: `GET /api/v1/social/channels`, `PUT /api/v1/social/channels/:provider`, `GET/POST /api/v1/social/posts`, hủy lịch.
+- Secret lưu ở `myta_social_channels.credentialCipher` bằng AES-256-GCM/scrypt dựa vào `ENCRYPTION_KEY`, không hiển thị lại qua API, không commit.
+- Cấu hình WordPress: HTTPS domain + username + Application Password. WordPress REST `/wp-json/wp/v2/posts`, bài có text và ảnh HTML từ URL HTTPS.
+- Facebook: Page ID và Page access token có quyền publish; Graph API `/PAGE_ID/feed`; có thể đăng văn bản và liên kết.
+- Zalo OA: OA access token; `/v2.0/article/create` với bìa ảnh. Phản hồi accepted cần theo dõi token/id xử lý, chưa mặc định coi là published.
+- TikTok: Content Posting API ảnh dùng URL ảnh từ domain/prefix đã xác minh; creator info + privacy; token scope `video.publish`. Phản hồi `publish_id` là submitted, không đồng nghĩa đã hiển thị; app cần audit để cho phép công khai.
+- Cron quét mỗi phút, claim atomic; trạng thái `draft/scheduled/processing/published/submitted/needs_action/failed/cancelled`; lỗi không tự retry nhằm tránh tạo bài trùng.
+- Người dùng phải chủ động xác nhận khi đăng ngay. Không kích hoạt gửi tin nhắn hàng loạt hoặc auto đăng khi chưa lưu lịch.
+- Hạn chế hiện tại: chưa tích hợp OAuth flow/refresh token và kiểm tra publish status Zalo OA/TikTok; kết nối cần token hợp lệ, hiện chưa cấu hình kênh xuất bản (0 trong DB).
+
+### Website Chat
+- Admin `/api/v1/website-chat/widgets` (CRUD giới hạn), `/api/v1/website-chat/threads` và reply API.
+- Nhúng widget với `<script async src="https://CRM_PUBLIC_HOST/widgets/<PUBLIC_KEY>/embed.js"></script>`, hệ thống dựng iframe `/widgets/<KEY>/frame`.
+- Khách gửi form (tên, email/điện thoại, lời nhắn, consent) tạo Contact source `Website Chat` + WebsiteChatThread/Entry.
+- Visitor token 32 bytes ngẫu nhiên lưu hash SHA-256 trong DB, dùng để đọc/gửi tiếp tin. Nhân viên đăng nhập CRM phản hồi trong hộp thư; khách thấy qua polling 5s.
+- Hạn chế abuse: honeypot, rate limit public, quyền theo tổ chức, CSP frame-ancestors hạn chế website origin, tránh chèn HTML trực tiếp khi hiển thị tin.
+- Website cần endpoint CRM trên **HTTPS công khai**. URL hiện tại `http://localhost:3080` chỉ dùng nội bộ; trước khi dán script lên `https://myta.vn` cần tên miền public và reverse proxy TLS (chưa thiết lập).
+- Đã có widget “Hỗ trợ trực tuyến” cấu hình cho `https://myta.vn` trong DB. Tránh xóa/chỉnh sửa widget khi chưa xác nhận.
+
+### QA và triển khai
+- Backup DB: `D:\Apps\ZaloCRM-backups\pre-social-chat-20261017.dump`.
+- 5 bảng mới `myta_social_channels`, `myta_social_publications`, `myta_website_chat_widgets`, `myta_website_chat_threads`, `myta_website_chat_entries`.
+- Build Docker, TypeScript, Vue: thành công.
+- `/health` trả HTTP 200 / DB connected; middleware quản trị trả 401 khi không có token.
+- Widget QA tạm: script JS parse OK, iframe 200, form tạo chat session và đọc tin OK; dữ liệu test đã được dọn.
+- Social scheduler QA tạm: bài test thiếu token => `failed` đúng thiết kế, test row và org đã dọn. **Chưa có publish end-to-end trên tài khoản bên thứ ba**.

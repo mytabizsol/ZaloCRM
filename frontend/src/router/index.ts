@@ -69,17 +69,26 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/journal',
-    name: 'JournalDrafts',
-    component: () => import('@/views/JournalDraftView.vue'),
+    path: '/social-publishing',
+    name: 'SocialPublishing',
+    component: () => import('@/views/SocialPublishingView.vue'),
     meta: { requiresAuth: true },
   },
   {
+    path: '/journal',
+    redirect: '/social-publishing',
+  },
+  {
     path: '/zalo-oa-publish',
-    name: 'ZaloOaPublish',
-    component: () => import('@/views/ZaloOaPublishView.vue'),
+    redirect: '/social-publishing',
+  },
+  {
+    path: '/website-chat',
+    name: 'WebsiteChat',
+    component: () => import('@/views/WebsiteChatView.vue'),
     meta: { requiresAuth: true },
   },
+
   {
     path: '/appointments',
     name: 'Appointments',

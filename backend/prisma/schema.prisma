@@ -275,3 +275,85 @@ model Order {
 
   @@map("orders")
 }
+
+/** Omnichannel credentials are AES-GCM encrypted at rest and never returned through APIs. */
+model SocialChannel {
+  id               String   @id @default(uuid())
+  orgId            String
+  provider         String
+  label            String
+  configJson       Json     @default("{}")
+  credentialCipher Bytes
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  @@unique([orgId, provider])
+  @@index([orgId])
+  @@map("myta_social_channels")
+}
+
+model SocialPublication {
+  id            String    @id @default(uuid())
+  orgId         String
+  createdById   String
+  provider      String
+  title         String
+  body          String
+  mediaUrls     Json      @default("[]")
+  publishMode   String    @default("publish")
+  status        String    @default("draft")
+  scheduledAt   DateTime?
+  attemptCount  Int       @default(0)
+  responseJson  Json      @default("{}")
+  lastError     String?
+  completedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  @@index([status, scheduledAt])
+  @@index([orgId, createdAt])
+  @@map("myta_social_publications")
+}
+
+model WebsiteChatWidget {
+  id          String   @id @default(uuid())
+  orgId       String
+  publicKey   String   @unique
+  title       String
+  domain      String
+  welcome     String   @default("Xin chào! Chúng tôi có thể hỗ trợ gì cho bạn?")
+  accent      String   @default("#2563EB")
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  threads     WebsiteChatThread[]
+  @@index([orgId])
+  @@map("myta_website_chat_widgets")
+}
+
+model WebsiteChatThread {
+  id               String   @id @default(uuid())
+  orgId            String
+  widgetId         String
+  contactId        String?
+  visitorName      String
+  visitorPhone     String?
+  visitorEmail     String?
+  visitorTokenHash String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  widget           WebsiteChatWidget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  messages         WebsiteChatEntry[]
+  @@index([orgId, updatedAt])
+  @@index([widgetId, createdAt])
+  @@map("myta_website_chat_threads")
+}
+
+model WebsiteChatEntry {
+  id        String @id @default(uuid())
+  threadId  String
+  sender    String
+  content   String
+  createdAt DateTime @default(now())
+  thread    WebsiteChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  @@index([threadId, createdAt])
+  @@map("myta_website_chat_entries")
+}

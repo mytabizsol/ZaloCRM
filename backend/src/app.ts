@@ -44,6 +44,10 @@ import { searchRoutes } from './modules/search/search-routes.js';
 import { startZaloHealthCheck } from './modules/zalo/zalo-health-check.js';
 import { publicApiRoutes } from './modules/api/public-api-routes.js';
 import { channelHubRoutes } from './modules/api/channel-hub-routes.js';
+import { socialRoutes } from './modules/api/social-routes.js';
+import { websiteChatAdminRoutes, websiteChatPublicRoutes } from './modules/api/website-chat-routes.js';
+import { websiteChatEmbedRoutes } from './modules/api/website-chat-embed.js';
+import { startSocialScheduler } from './modules/api/social-publisher.js';
 import { webhookSettingsRoutes } from './modules/api/webhook-settings-routes.js';
 import { orderRoutes } from './modules/orders/order-routes.js';
 import { workflowRoutes } from './modules/automation/workflow-routes.js';
@@ -140,6 +144,10 @@ async function bootstrap() {
   await app.register(searchRoutes);
   await app.register(publicApiRoutes);
   await app.register(channelHubRoutes);
+  await app.register(socialRoutes);
+  await app.register(websiteChatAdminRoutes);
+  await app.register(websiteChatPublicRoutes);
+  await app.register(websiteChatEmbedRoutes);
   await app.register(webhookSettingsRoutes);
   await app.register(orderRoutes);
   await app.register(workflowRoutes);
@@ -186,6 +194,7 @@ async function bootstrap() {
     logger.info(`Environment: ${config.nodeEnv}`);
     startAppointmentReminder(io);
     startWorkflowScheduler();
+    startSocialScheduler();
     startZaloHealthCheck();
   } catch (err) {
     logger.error('Failed to start server:', err);
