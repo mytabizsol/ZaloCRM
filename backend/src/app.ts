@@ -40,6 +40,7 @@ import { publicApiRoutes } from './modules/api/public-api-routes.js';
 import { webhookSettingsRoutes } from './modules/api/webhook-settings-routes.js';
 import { orderRoutes } from './modules/orders/order-routes.js';
 import { workflowRoutes } from './modules/automation/workflow-routes.js';
+import { startWorkflowScheduler } from './modules/automation/followup-engine.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -170,6 +171,7 @@ async function bootstrap() {
     logger.info(`Zalo CRM running on http://${config.host}:${config.port}`);
     logger.info(`Environment: ${config.nodeEnv}`);
     startAppointmentReminder(io);
+    startWorkflowScheduler();
     startZaloHealthCheck();
   } catch (err) {
     logger.error('Failed to start server:', err);
