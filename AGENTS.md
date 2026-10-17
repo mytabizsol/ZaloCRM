@@ -112,9 +112,9 @@ The executable roadmap is `docs/codex/TASKS.md`. Start with **STEP-00** (IA & Se
 
 ## Autopilot mode — Owner authorization 17/10/2026
 - Owner explicitly delegated unattended **sequential Codex development**; no per-step human checkpoint.
-- A new Codex process is automatically launched by `tools/codex-autopilot/runner.mjs` after the prior step exits and the external supervisor confirms safe checks. **Do not launch a second worker from within Codex.**
+- A new Codex process may be launched by the **local-only** supervisor on Marketing01 after the prior worker exits and external safety checks pass. Controller files and runbooks are not part of this repository. **Do not launch a second worker from within Codex.**
 - Defaults: Terra High, **at most 3 Codex invocations per Vietnam calendar day**, maximum 35 minutes each, no more than one focused repair per step, 20-minute build cap. The supervisor continues on the next day automatically while Marketing01 is powered on.
-- Operator controls and logs outside repo: `D:\Apps\ZaloCRM-autopilot\state.json`, `autopilot.log`, `STOP`; scripts are in `tools/codex-autopilot`. No push to main, no automatic live database migration, external OAuth, social publishing or paid purchases.
+- Operator controls, configuration, scripts and logs are stored **outside this Git repository** on Marketing01. Do not commit or copy the local controller into this repository. No push to main, no automatic live database migration, external OAuth, social publishing or paid purchases.
 - The worker MUST edit code and prepare tests, but never invoke `git add`, `git commit`, `git push`, `docker compose build` or production migrations inside its Windows sandbox. The supervisor runs Docker build and Git from an authorized outer session.
 - The first UI branding step STEP-00 had a successful operator-side production Docker build, HTTP 200 and logos tested. Treat its **code phase complete**, but full authenticated mobile UX is **deferred for regression in STEP-17**, not falsely reported as tested.
 - If external credentials, Git, syntax/build, backup or permission errors cannot be resolved safely within one bounded repair invocation, the supervisor records a BLOCKED state and stops rather than deleting data or escalating permissions.
