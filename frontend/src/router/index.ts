@@ -39,6 +39,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/automation',
+    name: 'Automation',
+    component: () => import('@/views/AutomationView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/zalo-accounts',
     name: 'ZaloAccounts',
     component: () => import('@/views/ZaloAccountsView.vue'),
