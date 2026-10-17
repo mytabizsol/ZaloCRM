@@ -1,7 +1,7 @@
 /**
  * Main application entry point.
  * Bootstraps Fastify server with all plugins, Socket.IO, and route handlers.
- * The process never exits — all errors are caught and logged.
+ * The process never exits â€” all errors are caught and logged.
  */
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
@@ -20,6 +20,7 @@ import { authRoutes } from './modules/auth/auth-routes.js';
 import { zaloRoutes } from './modules/zalo/zalo-routes.js';
 import { chatRoutes } from './modules/chat/chat-routes.js';
 import { contactRoutes } from './modules/contacts/contact-routes.js';
+import { leadInsightsRoutes } from './modules/contacts/lead-insights-routes.js';
 import { contactSubResourceRoutes } from './modules/contacts/contact-sub-resource-routes.js';
 import { appointmentRoutes } from './modules/contacts/appointment-routes.js';
 import { startAppointmentReminder } from './modules/contacts/appointment-reminder.js';
@@ -44,7 +45,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function bootstrap() {
   const app = Fastify({ logger: false });
 
-  // ── Plugins ──────────────────────────────────────────────────────────────
+  // â”€â”€ Plugins â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   await app.register(cors, {
     origin: config.isProduction ? config.appUrl : true,
@@ -79,7 +80,7 @@ async function bootstrap() {
     });
   }
 
-  // ── Socket.IO ─────────────────────────────────────────────────────────────
+  // â”€â”€ Socket.IO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const io = new Server(app.server, {
     cors: {
@@ -104,12 +105,13 @@ async function bootstrap() {
   // Register Zalo Socket.IO event handlers
   registerZaloSocketHandlers(io);
 
-  // ── Routes ────────────────────────────────────────────────────────────────
+  // â”€â”€ Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   await app.register(authRoutes);
   await app.register(zaloRoutes);
   await app.register(chatRoutes);
   await app.register(contactRoutes);
+  await app.register(leadInsightsRoutes);
   await app.register(contactSubResourceRoutes);
   await app.register(appointmentRoutes);
   await app.register(dashboardRoutes);
@@ -125,7 +127,7 @@ async function bootstrap() {
   await app.register(webhookSettingsRoutes);
   await app.register(orderRoutes);
 
-  // Liveness/readiness probe — also checks DB connectivity
+  // Liveness/readiness probe â€” also checks DB connectivity
   app.get('/health', async () => {
     try {
       await prisma.$queryRaw`SELECT 1`;
@@ -140,7 +142,7 @@ async function bootstrap() {
     return { version: '1.0.0', name: 'Zalo CRM' };
   });
 
-  // SPA fallback — serve index.html for non-API routes in production
+  // SPA fallback â€” serve index.html for non-API routes in production
   if (config.isProduction) {
     app.setNotFoundHandler(async (request, reply) => {
       if (request.url.startsWith('/api/')) {
@@ -150,7 +152,7 @@ async function bootstrap() {
     });
   }
 
-  // ── Error handler ─────────────────────────────────────────────────────────
+  // â”€â”€ Error handler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   app.setErrorHandler((error: Error & { statusCode?: number }, _request, reply) => {
     logger.error('Request error:', error.message);
@@ -159,7 +161,7 @@ async function bootstrap() {
     });
   });
 
-  // ── Start ─────────────────────────────────────────────────────────────────
+  // â”€â”€ Start â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   try {
     await app.listen({ port: config.port, host: config.host });
@@ -198,7 +200,7 @@ async function bootstrap() {
   }
 }
 
-// Keep process alive — log but never crash on unhandled errors
+// Keep process alive â€” log but never crash on unhandled errors
 process.on('uncaughtException', (err) => {
   logger.error('Uncaught Exception:', err);
 });
