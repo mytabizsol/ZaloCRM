@@ -2,14 +2,14 @@
 > Nguồn: ảnh chụp bảng giá Fchat 3 trang do chủ dự án cung cấp ngày 17/10/2026. Đây là phạm vi tham chiếu tính năng, không phải yêu cầu sao chép giao diện/nhãn hiệu/mã nguồn Fchat.
 
 ## Phạm vi
-- Mục tiêu: MYTA ZaloCRM / Omnichannel Growth CRM với **đầy đủ 54 hạng mục tham chiếu** (bao gồm tính năng, hạn mức kỹ thuật và dịch vụ).
+- Mục tiêu: MYTA ZaloCRM / Omnichannel Growth CRM với **đầy đủ 52 hạng mục tham chiếu** (bao gồm tính năng, hạn mức kỹ thuật và dịch vụ).
 - Bảng trang 1-2 có gói STARTER, LIVECHAT, CHATBOT, BUSINESS; định hướng tính năng của MYTA là bao phủ gói BUSINESS.
 - **Không đồng nhất** "Có nền tảng" với "tính năng hoàn thiện": các trạng thái dựa vào kiểm tra thư mục backend/frontend ngày 17/10/2026, vẫn cần QA từng nghiệp vụ.
 - Chức năng Fchat chủ yếu hướng Facebook; MYTA mở rộng có chọn lọc Zalo OA, Zalo cá nhân, WhatsApp, TikTok, WordPress trong phạm vi quyền API hợp lệ.
 - Tách biệt hạng mục Fchat bán bằng **credits/dung lượng/số nhân viên/pages** với chức năng thực thi. Chưa mặc định áp hạn mức/giá thương mại của bên thứ ba.
 - Không triển khai gửi tin hàng loạt ngoài consent/giới hạn nền tảng, không dùng API không được cấp quyền hay sao chép mã nguồn/license của Fchat.
 
-## Danh sách kiểm soát đầy đủ (54/54)
+## Danh sách kiểm soát đầy đủ (52/52)
 | Mã | Tính năng đúng theo ảnh chụp | Nhóm MYTA | Trạng thái tham chiếu | Ưu tiên | Tiêu chí hoàn thành |
 |---|---|---|---|---|---|
 | F01 | Tự động trả lời comment và inbox | Omnichannel | Chưa có | P0 | Luật tự động trên bình luận/tin nhắn Fanpage được cấp quyền, có lịch sử và opt-out |
@@ -60,9 +60,7 @@
 | F46 | Tên miền riêng | White-label | Một phần | P2 | Subdomain/custom domain, xác minh DNS/TLS, tenant routing |
 | F47 | Gửi email bằng email riêng | Marketing | Chưa có | P1 | Domain email riêng, SPF/DKIM/DMARC, SMTP/API |
 | F48 | Quản lý nhiều tài khoản FB Ads | Ads | Chưa có | P2 | Meta Marketing API, portfolio, quyền từng tài khoản, báo cáo |
-| F49 | Hỗ trợ, cho thuê tài khoản FB Ads | Dịch vụ | Quy trình ngoài phần mềm | P3 | Chỉ là hạng mục dịch vụ trong tài liệu, không sao chép thành API thuê tài khoản |
 | F50 | Hỗ trợ tích hợp hệ thống bán hàng có sẵn | Integration | Chưa có | P1 | Connector WooCommerce/ERP/webhook/import-export |
-| F51 | Đồng hành, tư vấn kịch bản, support 1-1 | Dịch vụ | Quy trình ngoài phần mềm | P3 | Helpdesk/SLA/onboarding và gói triển khai, không phải chức năng chatbot |
 | F52 | API & CRM | Platform | Một phần | P1 | REST/OpenAPI, API keys/scopes, webhook, audit, tenant isolation |
 | F53 | Trợ lý AI | AI | Chưa có | P1 | AI co-pilot có phân quyền, KB/RAG, gợi ý/handoff, xác nhận khi gửi |
 | F54 | Credits | Platform | Chưa có | P2 | Credit ledger, usage metering, hạn mức/hoàn trả và lịch sử |
@@ -76,7 +74,7 @@
 | GĐ3 – Website / Lead Growth | F04,F05,F07,F10,F11,F34,F41 | Popup/Form/Landing builder, embed, UTM/ref/QR conversion, Google Sheets connector |
 | GĐ4 – Commerce | F08,F09,F18,F19,F28-F33,F40,F44,F50 | Product/catalog/cart/order/payment/inventory/receipt/shipping/coupons |
 | GĐ5 – Loyalty & Gamification | F35-F39,F42,F43,F45 | Loyalty wallet/VIP, referral/affiliate, wheel, lotteries và audit gian lận |
-| GĐ6 – Enterprise & Platform | F20-F23,F25-F27,F46-F49,F51-F54 | Email + custom domains, storage/quota, API docs, AI KB, credits, Ads quản lý, SLA dịch vụ |
+| GĐ6 – Enterprise & Platform | F20-F23,F25-F27,F46-F48,F50,F52-F54 | Email + custom domains, storage/quota, API docs, AI KB, credits, Ads quản lý, SLA dịch vụ |
 
 ## Phụ thuộc và điều kiện không được bỏ qua
 1. **Meta/Facebook:** Facebook Login/Page OAuth, webhook, quyền messaging/comments/pages/posts theo quy trình duyệt ứng dụng; tuyệt đối không tự ý thu thập dữ liệu không được cấp quyền.
@@ -87,7 +85,6 @@
 6. **Website Chat & Forms:** CRM cần HTTPS public origin. Domain khách và CSP frame-ancestors phải được kiểm soát. Cần đồng ý xử lý dữ liệu và chính sách lưu giữ.
 7. **Marketing email:** chỉ gửi cho liên hệ opt-in, có unsubscribe, xử lý bounce/complaint và xác minh DNS.
 8. **Commerce:** thanh toán, kho, thu chi và hoàn tiền phải dùng ledger/idempotency, kiểm thử reconciliation; không tự coi là tương đương ERP.
-9. **Dịch vụ tư vấn và Ads account rental:** F49/F51 là chính sách dịch vụ của nhà cung cấp; không phải tính năng nền tảng có thể cam kết "code xong".
 10. **An toàn phát hành:** branch hiện tại `feature/upstream-v34-integration`; mã mới merge vào `main` sau unit/integration/e2e, staging và backup.
 
 ## Tình trạng ban đầu – đối chiếu repository
@@ -103,8 +100,8 @@
 - Có tài liệu cấu hình và điều kiện của provider; nếu cần credentials/phê duyệt phải ghi **Chờ quyền API**, không báo "đã tích hợp đầy đủ".
 - Có hướng dẫn sử dụng tiếng Việt, giới hạn/dung lượng phù hợp cấu hình MYTA, backup/rollback.
 
-## MYTA mở rộng ngoài 54 hạng mục Fchat
-Các phần dưới đây là **yêu cầu bổ sung từ những lượt phát triển ZaloCRM trước**, không được tính lẫn vào 54 dòng của ảnh chụp:
+## MYTA mở rộng ngoài 52 hạng mục Fchat
+Các phần dưới đây là **yêu cầu bổ sung từ những lượt phát triển ZaloCRM trước**, không được tính lẫn vào 52 dòng của ảnh chụp:
 | Mã | Module mở rộng | Mục tiêu nghiệm thu | Trạng thái |
 |---|---|---|---|
 | M01 | Quét nhóm Zalo cá nhân | Liệt kê nhóm của tài khoản có quyền, xem trước thành viên được phép xem, rate-limit | Một phần; cần QA tài khoản thật |
@@ -119,6 +116,12 @@ Các phần dưới đây là **yêu cầu bổ sung từ những lượt phát 
 | M10 | Business SaaS | Tenant provisioning, pricing plan, Stripe/VN gateways, subscription & credits | Chưa có |
 
 ### Phạm vi vận hành đề nghị
-- Lấy **đầy đủ chức năng ứng dụng** làm mục tiêu sản phẩm trước; không bắt chước giá, thương hiệu hay dịch vụ tư vấn/cho thuê tài khoản của Fchat.
+- Lấy **đầy đủ chức năng ứng dụng** làm mục tiêu sản phẩm trước; không bắt chước giá, thương hiệu hay các hoạt động ngoài phạm vi phần mềm.
 - Nghiệm thu theo chức năng và quyền provider thật; demo/mock hoặc giao diện chưa tính là hoàn thành.
 - Phát triển trên nhánh tính năng, giữ database backup; mỗi giai đoạn cần checklist an toàn, bảo vệ thông tin khách hàng và khả năng rollback.
+
+## Phê duyệt phạm vi ngày 17/10/2026
+- Chỉ giữ **52 tính năng Fchat** (mã F01–F54 trừ F49 và F51); các mã cũ được giữ để đối chiếu bản chụp gốc, không đánh số lại.
+- **Loại bỏ hoàn toàn** dịch vụ cho thuê tài khoản quảng cáo và tư vấn/hỗ trợ 1:1 như hạng mục sản phẩm.
+- Bổ sung module **Dự án** có database, API, giao diện, phân quyền và liên kết CRM (đặc tả docs/codex/PROJECTS.md).
+- Toàn bộ UI đổi thành **MYTA CRM** dùng logo MYTA gốc và menu, settings theo docs/codex/UX-IA.md.
