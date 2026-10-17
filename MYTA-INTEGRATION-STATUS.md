@@ -43,3 +43,32 @@
 3. AI draft opt-in theo nhà cung cấp, tránh gửi dữ liệu khách không có căn cứ pháp lý.
 4. Telegram Bridge 2 chiều khi có bot token, mapping hội thoại và quy tắc quyền riêng tư.
 5. Audit security, API hardening, rate limit theo tài khoản, hàng đợi xử lý, test suite.
+
+## Bổ sung ngày 17/10/2026 — Quét nhóm / Bài viết Zalo
+
+### Group Scan thật từ SDK
+- Trang: `/group-scan`
+- API: `GET/POST /api/v1/zalo-accounts/:zaloAccountId/group-scan`
+- Lấy nhóm bằng `getAllGroups()`, lấy tên, số thành viên, mô tả bằng `getGroupInfo()` (SDK zca-js).
+- Giới hạn 100 nhóm/lượt, xử lý 10 nhóm/batch, nghỉ 850ms, cooldown 5 phút, một lượt/tài khoản, phân quyền đọc tài khoản.
+- Lưu snapshot tối giản trong `app_settings`. Không tự import danh sách thành viên vào CRM.
+- Xem trước thành viên nhóm: `GET .../group-scan/:groupId/members`, tối đa 100 hồ sơ có sẵn trong groupInfo; tôn trọng trạng thái hạn chế xem thành viên.
+- Chưa thể QA với nhóm thật vì container khởi động báo 0 Zalo account. Cần kết nối QR và quét chủ động trong UI. SDK zca-js là API cá nhân không chính thức, có rủi ro hạn chế tài khoản.
+
+### Nhật ký Zalo cá nhân
+- Trang: `/journal`, API `GET/PUT /api/v1/journal/drafts`.
+- Lưu bản nháp theo từng user (tối đa 30), xem trước nội dung và tối đa 9 URL ảnh HTTPS, sao chép để đăng thủ công.
+- **Chưa tích hợp đăng nhật ký cá nhân trực tiếp**: phiên bản zca-js hiện tại không có phương thức public/documented cho thao tác này. Không dùng endpoint reverse-engineered chưa kiểm chứng để tránh nguy cơ khóa nick/đăng nhầm.
+
+### Đăng bài Zalo OA (khác với nhật ký cá nhân)
+- Trang: `/zalo-oa-publish`, API `POST /api/v1/zalo-oa/articles` chỉ Owner/Admin.
+- Gửi yêu cầu tạo bài đến endpoint chính thức `https://openapi.zalo.me/v2.0/article/create` với token OA nhập một lần, không lưu database, xác nhận trước khi gửi, chọn bài ẩn hoặc công khai.
+- Trả về trạng thái OA **đã tiếp nhận yêu cầu**, không đồng nghĩa xác minh bài đã xuất bản; cần kiểm tra trạng thái xử lý trong Zalo OA.
+- Chưa kiểm thử với OA token có quyền vì chưa được kết nối/cấp quyền.
+- Tài liệu: https://docs.zaloplatforms.com/docs/OA/noi-dung/noi-dung-dang-bai-viet
+
+### Kiểm tra
+- Backend TypeScript, Vue và Docker image: build thành công.
+- /health: 200 DB connected; các route SPA /group-scan, /journal, /zalo-oa-publish: HTTP 200.
+- Group scan và OA publish API không có JWT: 401.
+- Không thay đổi database schema, không gửi bài/tin tự động khi không có xác nhận.
