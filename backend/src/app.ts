@@ -52,6 +52,7 @@ import { webhookSettingsRoutes } from './modules/api/webhook-settings-routes.js'
 import { orderRoutes } from './modules/orders/order-routes.js';
 import { workflowRoutes } from './modules/automation/workflow-routes.js';
 import { startWorkflowScheduler } from './modules/automation/followup-engine.js';
+import { projectRoutes } from './modules/projects/project-routes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -151,6 +152,7 @@ async function bootstrap() {
   await app.register(webhookSettingsRoutes);
   await app.register(orderRoutes);
   await app.register(workflowRoutes);
+  await app.register(projectRoutes);
 
   // Liveness/readiness probe â€” also checks DB connectivity
   app.get('/health', async () => {

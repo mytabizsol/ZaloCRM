@@ -4,7 +4,7 @@
 | ID | State | Deliverable | Acceptance gates | Dependencies |
 |---|---|---|---|---|
 | STEP-00 | DONE | **MYTA CRM branding + scientific IA + Settings hub** | Use exact MYTA original logo, update title/favicon/header/login/product names, group navigation by business domain, migrate old links with redirects, Settings hub with clearly labeled subpages. Desktop/mobile UX; no DB changes. | None |
-| STEP-01 | TODO | **CRM Projects domain** | Prisma migration with verified backup, Project/Task/Milestone/Membership with tenant-safe CRUD, proper RBAC and tests. | STEP-00 |
+| STEP-01 | DONE | **CRM Projects domain** | Prisma migration with verified backup, Project/Task/Milestone/Membership with tenant-safe CRUD, proper RBAC and tests. | STEP-00 |
 | STEP-02 | TODO | **CRM Projects frontend** | Project list/table + Kanban + creation/detail/tasks/milestones/members, linked contact, filters, deadlines, responsive and accessibility tests. | STEP-01 |
 | STEP-03 | TODO | **Project reporting & Settings** | Project KPIs, overdue notices, owner assignments, configurable defaults, project activity history, permission tests. | STEP-02 |
 | STEP-04 | TODO | **Omnichannel Inbox architecture** | Provider-independent conversation adapter/threads/assignment/search and clear channel status. No fabricated sync. | STEP-00 |

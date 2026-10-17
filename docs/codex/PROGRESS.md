@@ -38,3 +38,22 @@ For each Codex run append:
 - Completed branding and settings code is permitted as dependency for STEP-01 under owner's unattended development authorization.
 - Full authenticated responsive/navigation E2E and possible Chrome mobile viewport anomaly are **not tested**; retain in STEP-17 regression backlog. STEP-00 therefore has code status DONE, NOT production-validated UX.
 - New policy: unattended supervisor builds, commits and pushes approved feature branch after gates; never touches live production DB automatically.
+
+## STEP-01 — PARTIAL / CHỜ supervisor xác minh (2026-10-17)
+
+- **Step / Scope:** CRM Projects backend duy nhất: schema Prisma + migration additive, Fastify API CRUD dự án/công việc/mốc/thành viên, RBAC tenant-safe, audit và test hợp đồng. Không làm UI STEP-02, không thay Docker/Odoo/credential/provider.
+- **Plan / risks before deployment:** mọi truy vấn dùng JWT `orgId`; liên kết Contact/User/Milestone phải xác minh cùng tổ chức vì FK không thể bảo đảm `org_id` tương ứng. Rủi ro chính là DB hiện chưa có lịch sử Prisma migration và worker không có quyền sao lưu/migrate live; chỉ supervisor được tạo/xác minh backup rồi chạy migration theo staged deployment.
+- **Research:** xem Plane (AGPL-3.0) và OpenProject (GPL-3.0), ghi vào `OSS-DECISIONS.md`; chỉ học state/membership/audit, không copy source/UI/tài sản hoặc thêm dependency.
+- **Files:** `backend/prisma/schema.prisma`; `backend/prisma/migrations/migration_lock.toml`; `backend/prisma/migrations/20261017000100_add_projects_domain/migration.sql`; `backend/src/modules/projects/{project-routes,project-policy,project-validation}.ts`; `backend/src/modules/projects/*test.ts`; `backend/src/app.ts`; `backend/package.json`; `docs/codex/{PROJECTS-API,OSS-DECISIONS}.md`.
+- **Before → after:** chưa có domain Projects → Project (mã unique/org, soft archive), ProjectMember (manager/member/viewer), ProjectTask, ProjectMilestone và index/FK additive. Route `/api/v1/projects` có list/search/page <=100/stats/detail, task/milestone/member/activity subresources. Owner/admin có quyền org; manager chỉ dự án tham gia; member chỉ tạo task/sửa task giao cho chính mình; viewer chỉ đọc. Mọi ghi/xem kiểm tra `orgId`; Contact/User/Milestone/assignee cross-org bị từ chối; log chỉ chứa ID/trường thay đổi, không ghi nội dung mô tả.
+- **Build:** **NOT RUN** theo phân quyền worker. `backend/node_modules` không tồn tại; `npx prisma validate --schema prisma/schema.prisma` exit 1 vì npm cache-only không có package Prisma (`ENOTCACHED`), không retry/network/install. Supervisor cần chạy `npm run build` backend trong môi trường dependency đầy đủ.
+- **Tests:** đã thêm `npm run test:projects` (build rồi chạy `node --test`) với RBAC/state/validation và Fastify injection contract: happy create/audit, contact khác tenant 400, project khác tenant 404, payload invalid 400, empty list 200, viewer PATCH 403. **NOT RUN** vì cùng blocker dependencies. `git -c safe.directory=D:/Apps/ZaloCRM diff --check` exit 0. UI viewport/E2E thực tế chưa thuộc STEP-01 và chưa kiểm tra.
+- **Backup / migration:** migration chỉ `CREATE TABLE`/`CREATE INDEX`, không có `DROP`, `ALTER` destructive, `db push` hay deploy. Backup timestamped + `pg_restore --list`/checksum và `prisma migrate status/deploy` là **CHỜ supervisor xác minh**; hướng dẫn tại `PROJECTS-API.md`. Không có migration live, seed, backup hay thay đổi DB nào đã thực hiện.
+- **Blockers:** sandbox không có backend dependencies và không được phép thực hiện live database backup/migration/build. Không có provider credential blocker.
+- **Commit:** CHƯA CÓ — worker không chạy git add/commit/push theo chỉ thị; supervisor quyết định sau build/test/backup gates.
+- **Next step:** supervisor chạy Prisma validate/build/test theo file mới, backup verification và staged migration khi được phép; chỉ sau khi gate đạt mới bắt đầu STEP-02. **STOP.**
+
+### Autopilot STEP-01 — 2026-10-17T13:21:18.325Z
+- Codex source implemented; supervised docker compose build app succeeded; no automatic database migration or deployment.
+- Build is NOT end-to-end business QA. Browser integration, provider OAuth and final production readiness remain in STEP-17 or provider gates.
+- Changes committed to feature branch by external supervisor, not by Codex sandbox.

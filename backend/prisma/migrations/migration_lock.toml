@@ -1,0 +1,2 @@
+# Created with the first reviewed Prisma migration. Do not change provider without a migration strategy.
+provider = "postgresql"
