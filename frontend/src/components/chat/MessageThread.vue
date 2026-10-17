@@ -87,6 +87,10 @@
         <div v-if="!loading && messages.length === 0" class="text-center pa-8 text-grey">Chưa có tin nhắn</div>
       </div>
 
+      <!-- Quick replies: insert draft only, never send automatically -->
+      <div class="px-3 pt-2 d-flex ga-2 flex-wrap">
+        <v-chip v-for="template in quickReplies" :key="template.label" size="small" variant="outlined" color="primary" @click="insertQuickReply(template.text)">{{ template.label }}</v-chip>
+      </div>
       <!-- Input -->
       <div class="pa-2 d-flex align-end chat-input-area">
         <v-textarea v-model="inputText" placeholder="Nhập tin nhắn..." variant="solo-filled" density="compact" hide-details auto-grow rows="1" max-rows="3" @keydown.enter.exact.prevent="handleSend" class="flex-grow-1 mr-2" />
@@ -123,6 +127,13 @@ const props = defineProps<{
 const emit = defineEmits<{ send: [content: string]; 'toggle-contact-panel': [] }>();
 
 const inputText = ref('');
+const quickReplies = [
+  { label: 'Chào khách', text: 'Xin chào anh/chị! Em có thể hỗ trợ mình thông tin gì ạ?' },
+  { label: 'Xin thông tin', text: 'Anh/chị vui lòng để lại nhu cầu và số điện thoại liên hệ để bên em tư vấn chi tiết nhé.' },
+  { label: 'Xác nhận', text: 'Em đã nhận được thông tin. Em sẽ kiểm tra và phản hồi anh/chị sớm nhất có thể.' },
+  { label: 'Cảm ơn', text: 'Cảm ơn anh/chị đã liên hệ và quan tâm đến dịch vụ của bên em!' },
+];
+function insertQuickReply(text: string) { inputText.value = inputText.value.trim() ? inputText.value + '\n' + text : text; }
 const messagesContainer = ref<HTMLElement | null>(null);
 const previewImageUrl = ref('');
 const showImagePreview = computed({ get: () => !!previewImageUrl.value, set: (v) => { if (!v) previewImageUrl.value = ''; } });

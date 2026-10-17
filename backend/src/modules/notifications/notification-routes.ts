@@ -23,6 +23,26 @@ export async function notificationRoutes(app: FastifyInstance) {
     const user = request.user!;
     const notifications: NotificationItem[] = [];
 
+    // Lead follow-up automation: flag dormant pipeline contacts, without sending Zalo messages.
+    const followupCutoff = new Date(Date.now() - 14 * 86400000);
+    const dormantLeads = await prisma.contact.count({
+      where: {
+        orgId: user.orgId,
+        status: { in: ['new', 'contacted', 'interested'] },
+        updatedAt: { lt: followupCutoff },
+      },
+    });
+    if (dormantLeads > 0) {
+      notifications.push({
+        id: 'lead-followup-14d',
+        type: 'warning',
+        priority: 'high',
+        title: `${dormantLeads} khách hàng cần chăm sóc lại`,
+        detail: 'Khách hàng ở pipeline chưa được cập nhật trong 14 ngày — xem Lead Scoring',
+        createdAt: new Date().toISOString(),
+      });
+    }
+
     // 1. Unreplied conversations > 30 min
     const thirtyMinAgo = new Date(Date.now() - 30 * 60000);
     const unreplied = await prisma.conversation.count({
