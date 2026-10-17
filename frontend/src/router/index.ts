@@ -57,6 +57,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/channels',
+    name: 'Channels',
+    component: () => import('@/views/ChannelHubView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/appointments',
     name: 'Appointments',
     component: () => import('@/views/AppointmentsView.vue'),

@@ -40,6 +40,7 @@ import { notificationRoutes } from './modules/notifications/notification-routes.
 import { searchRoutes } from './modules/search/search-routes.js';
 import { startZaloHealthCheck } from './modules/zalo/zalo-health-check.js';
 import { publicApiRoutes } from './modules/api/public-api-routes.js';
+import { channelHubRoutes } from './modules/api/channel-hub-routes.js';
 import { webhookSettingsRoutes } from './modules/api/webhook-settings-routes.js';
 import { orderRoutes } from './modules/orders/order-routes.js';
 import { workflowRoutes } from './modules/automation/workflow-routes.js';
@@ -132,6 +133,7 @@ async function bootstrap() {
   await app.register(notificationRoutes);
   await app.register(searchRoutes);
   await app.register(publicApiRoutes);
+  await app.register(channelHubRoutes);
   await app.register(webhookSettingsRoutes);
   await app.register(orderRoutes);
   await app.register(workflowRoutes);
