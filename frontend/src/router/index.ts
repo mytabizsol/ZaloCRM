@@ -63,6 +63,18 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/group-scan',
+    name: 'GroupScan',
+    component: () => import('@/views/GroupScanView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/journal',
+    name: 'JournalDrafts',
+    component: () => import('@/views/JournalDraftView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/appointments',
     name: 'Appointments',
     component: () => import('@/views/AppointmentsView.vue'),

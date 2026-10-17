@@ -110,6 +110,8 @@ const menuItems = computed(() => [
   { title: 'Automation', icon: 'mdi-robot-outline', path: '/automation' },
   { title: 'Tài khoản Zalo', icon: 'mdi-cellphone-link', path: '/zalo-accounts' },
   { title: 'Kết nối đa kênh', icon: 'mdi-connection', path: '/channels' },
+  { title: 'Quét nhóm Zalo', icon: 'mdi-account-group', path: '/group-scan' },
+  { title: 'Soạn nhật ký', icon: 'mdi-post-outline', path: '/journal' },
   { title: 'Lịch hẹn', icon: 'mdi-calendar-clock-outline', path: '/appointments' },
   { title: 'Đơn hàng', icon: 'mdi-cart-outline', path: '/orders' },
   { title: 'Báo cáo', icon: 'mdi-chart-arc', path: '/reports' },
