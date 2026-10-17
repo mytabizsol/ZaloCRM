@@ -33,6 +33,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/lead-scoring',
+    name: 'LeadScoring',
+    component: () => import('@/views/LeadScoringView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/zalo-accounts',
     name: 'ZaloAccounts',
     component: () => import('@/views/ZaloAccountsView.vue'),
