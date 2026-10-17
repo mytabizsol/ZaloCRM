@@ -57,3 +57,18 @@ For each Codex run append:
 - Codex source implemented; supervised docker compose build app succeeded; no automatic database migration or deployment.
 - Build is NOT end-to-end business QA. Browser integration, provider OAuth and final production readiness remain in STEP-17 or provider gates.
 - Changes committed to feature branch by external supervisor, not by Codex sandbox.
+
+## STEP-02 — PARTIAL / CHỜ supervisor xác minh (2026-10-17)
+
+- **Step / Scope:** CRM Projects frontend duy nhất: danh sách/bảng, Kanban dự án, tạo dự án có liên kết Contact, chi tiết dự án, Kanban công việc có chuyển trạng thái bằng bàn phím, mốc, thành viên và activity. Không thay backend/schema/migration, provider, Docker, Odoo, credentials hay công cụ autopilot.
+- **Files:** `frontend/src/composables/use-projects.ts`; `frontend/src/views/{ProjectsView,ProjectDetailView}.vue`; `frontend/src/router/index.ts`; `frontend/src/layouts/DefaultLayout.vue`.
+- **Before → after:** nhóm Dự án không còn các mục disabled “Sắp ra mắt”; `/projects` là danh sách có tìm kiếm, lọc trạng thái/chủ dự án/khách hàng/hạn, bảng responsive (card trên mobile) và Kanban theo trạng thái. Form tạo/chỉnh sửa trim theo API, bắt buộc tên, kiểm tra ngày và không che giấu lỗi server. `/projects/:id` có overview/liên kết khách hàng, board công việc, mốc, roster thành viên và activity; status selector là fallback keyboard thay cho DnD. Tất cả dữ liệu đi qua `/api/v1/projects` và subresource có JWT/RBAC từ STEP-01; UI không khẳng định quyền thay server.
+- **UX/accessibility:** landmark/title/breadcrumb, nhãn cho controls/icon, target button tối thiểu 40px, focus rõ cho hàng/card, tab logic, table desktop/card mobile và Kanban cuộn ngang có chủ ý. Không thêm số liệu hoặc kết nối giả.
+- **Build / Tests:** `git -c safe.directory=D:/Apps/ZaloCRM diff --check` exit 0. `node node_modules/vue-tsc/bin/vue-tsc.js -b` chạy và không báo lỗi từ files STEP-02, nhưng exit 1 do lỗi nền có trước: declaration `vuetify` trong `plugins/vuetify.ts`/layout và implicit `any` trong `SetupView.vue`. `npm run build` exit 1 vì `.bin/vue-tsc` không tồn tại trong sandbox; gọi trực tiếp Vite cũng exit 1 do sandbox `spawn EPERM` khi nạp config. Không có frontend test runner hiện hữu để thêm/chạy UI test.
+- **QA chưa xác minh:** Chrome có tab MYTA CRM nhưng origin approval từ chối quyền quan sát `http://localhost:3080`; không dùng workaround. Vì vậy render authenticated route, API E2E và viewport 360/390/768/1280/focus thực tế **NOT TESTED**; supervisor cần kiểm tra sau build theo các viewport này. Không có provider authorization/deployment.
+- **Commit:** CHƯA CÓ — worker không chạy git add/commit/push theo chỉ thị. **Next step:** supervisor chạy build image và browser smoke sau khi fixes lỗi nền/dependency, rồi commit/push nếu gates đạt; không tự bắt đầu STEP-03. **STOP.**
+
+### Autopilot STEP-02 — 2026-10-17T13:30:14.137Z
+- Codex source implemented; supervised docker compose build app succeeded; no automatic database migration or deployment.
+- Build is NOT end-to-end business QA. Browser integration, provider OAuth and final production readiness remain in STEP-17 or provider gates.
+- Changes committed to feature branch by external supervisor, not by Codex sandbox.

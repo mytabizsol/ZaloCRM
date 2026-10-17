@@ -144,9 +144,7 @@ const navigationGroups: NavigationGroup[] = [
   {
     key: 'projects', title: 'Dự án', icon: 'mdi-briefcase-outline',
     items: [
-      { title: 'Danh sách dự án', icon: 'mdi-format-list-bulleted', future: true },
-      { title: 'Bảng công việc', icon: 'mdi-view-kanban-outline', future: true },
-      { title: 'Mốc & nhiệm vụ', icon: 'mdi-flag-checkered', future: true },
+      { title: 'Dự án & công việc', icon: 'mdi-view-kanban-outline', path: '/projects' },
     ],
   },
   {
