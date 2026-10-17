@@ -58,8 +58,14 @@
               </div>
               <!-- Sticker/Video/Voice/GIF -->
               <div v-else-if="msg.contentType === 'sticker'">🏷️ Sticker</div>
-              <div v-else-if="msg.contentType === 'video'">🎥 Video</div>
-              <div v-else-if="msg.contentType === 'voice'">🎤 Tin nhắn thoại</div>
+              <div v-else-if="msg.contentType === 'video'">
+                <video v-if="getMediaUrl(msg)" :src="getMediaUrl(msg)!" controls preload="metadata" playsinline style="max-width: 100%; max-height: 300px; border-radius: 8px" />
+                <span v-else>Video (chưa có đường dẫn phát)</span>
+              </div>
+              <div v-else-if="msg.contentType === 'voice'">
+                <audio v-if="getMediaUrl(msg)" :src="getMediaUrl(msg)!" controls preload="none" style="max-width: 100%" />
+                <span v-else>Tin nhắn thoại (chưa có đường dẫn phát)</span>
+              </div>
               <div v-else-if="msg.contentType === 'gif'">GIF</div>
               <!-- Reminder/Calendar -->
               <div v-else-if="isReminderMessage(msg)" class="reminder-card">
@@ -158,6 +164,24 @@ function getImageUrl(msg: Message): string | null {
     } catch {}
   }
   return null;
+}
+
+/** Render available remote media without uploading or changing message history. */
+function getMediaUrl(msg: Message): string | null {
+  const value=msg.content?.trim();
+  if (!value) return null;
+  let candidate=value;
+  if (value.startsWith('{')) {
+    try {
+      const item=JSON.parse(value);
+      const p=typeof item.params==='string'?JSON.parse(item.params):item.params;
+      candidate=item.hdUrl || item.href || item.url || p?.hdUrl || p?.href || p?.url || '';
+    } catch { return null; }
+  }
+  try {
+    const url=new URL(candidate);
+    return ['https:','http:'].includes(url.protocol)?url.href:null;
+  } catch { return null; }
 }
 
 /** Extract file info from JSON content (PDF, docs, etc.) */
